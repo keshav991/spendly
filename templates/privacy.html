@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Privacy Policy — Spendly{% endblock %}
+
+{% block content %}
+<section class="content-page">
+    <div class="content-inner">
+        <h1 class="page-title">Privacy Policy</h1>
+        <p class="page-subtitle">Last Updated: October 24, 2026</p>
+
+        <div class="terms-section">
+            <h2 class="terms-heading">1. Data We Collect</h2>
+            <p class="terms-text">We collect information that you provide directly to us, including your email address when you create an account and the financial transactions you log within the application (amounts, categories, and dates).</p>
+        </div>
+
+        <div class="terms-section">
+            <h2 class="terms-heading">2. How We Use Your Data</h2>
+            <p class="terms-text">Your data is used exclusively to provide the expense tracking service. This includes generating your spending reports, maintaining your account, and improving the user experience of the Spendly application.</p>
+        </div>
+
+        <div class="terms-section">
+            <h2 class="terms-heading">3. Data Storage</h2>
+            <p class="terms-text">We employ industry-standard security measures to store your data. Your information is stored on secure servers and is not accessible to other users of the service.</p>
+        </div>
+
+        <div class="terms-section">
+            <h2 class="terms-heading">4. Third Party Services</h2>
+            <p class="terms-text">Spendly does not sell, trade, or otherwise transfer your personally identifiable information to third parties. We do not use third-party tracking cookies or analytics on this platform.</p>
+        </div>
+
+        <div class="terms-section">
+            <h2 class="terms-heading">5. Contact Us</h2>
+            <p class="terms-text">If you have any questions regarding this Privacy Policy or your data, please contact us through the support channels provided in your account settings.</p>
+        </div>
+
+        <div class="terms-footer">
+            <a href="{{ url_for('landing') }}" class="btn-ghost">Return to Home</a>
+        </div>
+    </div>
+</section>
+
+<style>
+    .content-page {
+        padding: 4rem 2rem;
+        max-width: var(--max-width);
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+    }
+    .content-inner {
+        background: var(--paper-card);
+        padding: 3rem;
+        border-radius: var(--radius-lg);
+        box-shadow: 0 8px 40px rgba(0,0,0,0.06);
+        border: 1px solid var(--border);
+        max-width: 800px;
+        width: 100%;
+        line-height: 1.6;
+    }
+    .page-title {
+        font-family: var(--font-display);
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        color: var(--ink);
+    }
+    .page-subtitle {
+        color: var(--ink-muted);
+        margin-bottom: 3rem;
+        font-size: 0.9rem;
+    }
+    .terms-section {
+        margin-bottom: 2rem;
+    }
+    .terms-heading {
+        font-family: var(--font-body);
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--ink);
+    }
+    .terms-text {
+        color: var(--ink-soft);
+        margin-bottom: 1rem;
+    }
+    .terms-footer {
+        margin-top: 3rem;
+        border-top: 1px solid var(--border-soft);
+        padding-top: 2rem;
+        text-align: center;
+    }
+</style>
+{% endblock %}
