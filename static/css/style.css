@@ -163,7 +163,7 @@ a { color: inherit; text-decoration: none; }
     margin-bottom: 1.5rem;
 }
 
-.hero-title em {
+.hero-title .accent-text {
     font-style: italic;
     color: var(--accent);
 }
