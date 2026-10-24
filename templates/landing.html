@@ -56,12 +56,12 @@
     </div>
 </section>
 
-<div id="demo-modal" class="modal-overlay">
+<div id="demo-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Spendly demo video">
     <div class="modal-container">
-        <button id="close-demo-modal" class="modal-close">&times;</button>
+        <button id="close-demo-modal" class="modal-close" type="button" aria-label="Close video">&times;</button>
         <div class="modal-content">
             <div class="video-wrapper">
-                <iframe id="demo-video" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                <iframe id="demo-video" src="" title="Spendly demo video" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
             </div>
         </div>
     </div>
@@ -152,5 +152,32 @@
         <a href="{{ url_for('register') }}" class="btn-primary">Create free account</a>
     </div>
 </section>
+
+{% block scripts %}
+<script>
+    (() => {
+        const openButton = document.getElementById('open-demo-modal');
+        const closeButton = document.getElementById('close-demo-modal');
+        const modal = document.getElementById('demo-modal');
+        const video = document.getElementById('demo-video');
+        const videoUrl = 'https://www.youtube.com/embed/ysz5S6PUM-U?autoplay=1';
+
+        const closeModal = () => {
+            modal.style.display = 'none';
+            video.src = '';
+        };
+
+        openButton.addEventListener('click', () => {
+            video.src = videoUrl;
+            modal.style.display = 'flex';
+        });
+
+        closeButton.addEventListener('click', closeModal);
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) closeModal();
+        });
+    })();
+</script>
+{% endblock %}
 
 {% endblock %}
