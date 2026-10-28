@@ -1,13 +1,26 @@
+import os
 import sqlite3
 from pathlib import Path
 from werkzeug.security import generate_password_hash
 
 # Keep the database tied to this project instead of the process working directory.
-DATABASE = Path(__file__).resolve().parent.parent / 'spendly.db'
+DEFAULT_DATABASE = Path(__file__).resolve().parent.parent / 'spendly.db'
+DATABASE = Path(os.environ.get('SPENDLY_DATABASE', DEFAULT_DATABASE))
+
+
+class _ClosingConnection(sqlite3.Connection):
+    """Connection that commits/rolls back and closes when used as a context manager."""
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        try:
+            return super().__exit__(exc_type, exc_value, traceback)
+        finally:
+            self.close()
+
 
 def get_db():
     """Returns a SQLite connection with row_factory and foreign keys enabled."""
-    conn = sqlite3.connect(DATABASE)
+    conn = sqlite3.connect(DATABASE, factory=_ClosingConnection)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON;")
     return conn
