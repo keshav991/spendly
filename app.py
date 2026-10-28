@@ -37,18 +37,31 @@ def register():
         name = request.form.get("name")
         email = request.form.get("email")
         password = request.form.get("password")
+        confirm_password = request.form.get("confirm_password")
 
-        if not name or not email or not password:
-            return render_template("register.html", error="All fields are required.")
+        # 1. Check for empty fields
+        if not all([name, email, password, confirm_password]):
+            flash("All fields are required.")
+            return redirect(url_for('register'))
 
+        # 2. Check password match
+        if password != confirm_password:
+            flash("Passwords do not match.")
+            return redirect(url_for('register'))
+
+        # 3. Check email uniqueness
         if get_user_by_email(email):
-            return render_template("register.html", error="An account with this email already exists.")
+            flash("Email already registered.")
+            return redirect(url_for('register'))
 
-        hashed_password = generate_password_hash(password)
-        create_user(name, email, hashed_password)
-
-        flash("Account created successfully! Please sign in.")
-        return redirect(url_for('login'))
+        try:
+            hashed_password = generate_password_hash(password)
+            create_user(name, email, hashed_password)
+            flash("Account created successfully! Please sign in.")
+            return redirect(url_for('login'))
+        except Exception as e:
+            flash(f"An error occurred: {e}")
+            return redirect(url_for('register'))
 
     return render_template("register.html")
 
