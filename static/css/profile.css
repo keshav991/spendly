@@ -1,0 +1,290 @@
+/* static/css/profile.css */
+
+.profile-section {
+    max-width: var(--max-width);
+    margin: 3rem auto;
+    padding: 0 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+/* User Header */
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 2.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    background: var(--accent);
+    color: var(--paper);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: 600;
+    font-family: var(--font-display);
+    box-shadow: 0 4px 12px rgba(26, 71, 42, 0.2);
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.profile-name {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--ink);
+    margin: 0;
+}
+
+.profile-email {
+    font-size: 1.1rem;
+    color: var(--ink-muted);
+}
+
+.profile-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--accent);
+    background: var(--accent-light);
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    width: fit-content;
+    margin-top: 0.75rem;
+}
+
+/* Stats Dashboard */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.stat-card {
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.stat-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--ink-muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.stat-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--accent);
+}
+
+.stat-value {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+}
+
+/* Transactions Section */
+.data-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.section-title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.section-title .section-icon {
+    width: 24px;
+    height: 24px;
+    color: var(--accent);
+}
+
+.btn-add {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background 0.2s;
+}
+
+.btn-add:hover { background: var(--accent); }
+
+.tx-table-container {
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.tx-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.tx-table th {
+    background: var(--paper-warm);
+    padding: 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border);
+}
+
+.tx-table td {
+    padding: 1rem;
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--border-soft);
+}
+
+.tx-table tr:last-child td { border-bottom: none; }
+.tx-table tr:hover { background: var(--paper-warm); }
+
+.tx-amount {
+    font-weight: 600;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+.tx-cat-badge {
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: var(--border-soft);
+    color: var(--ink-muted);
+}
+
+.action-cell {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.btn-action {
+    background: transparent;
+    border: 1px solid var(--border);
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-action-edit:hover { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
+.btn-action-delete:hover { background: var(--danger-light); color: var(--danger); border-color: var(--danger); }
+
+/* Breakdown Section */
+.breakdown-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.breakdown-card {
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+}
+
+.breakdown-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.breakdown-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.breakdown-label {
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+}
+
+.breakdown-value {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--ink);
+}
+
+.progress-track {
+    height: 8px;
+    background: var(--border-soft);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 999px;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (max-width: 768px) {
+    .stats-grid { grid-template-columns: 1fr; }
+    .profile-header { flex-direction: column; text-align: center; }
+    .profile-avatar { margin: 0 auto; }
+    .profile-info { align-items: center; }
+    .profile-badge { margin: 0.75rem auto 0; }
+    .section-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    .tx-table-container { overflow-x: auto; }
+}
