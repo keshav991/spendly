@@ -1,19 +1,20 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash, abort
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 from database.db import init_db, seed_db, get_user_by_email, create_user
-from database.queries import get_user_by_id, get_summary_stats, get_recent_transactions, get_category_breakdown, get_expense_by_id, update_expense
+from database.queries import get_user_by_id, get_summary_stats, get_recent_transactions, get_category_breakdown, get_expense_by_id, update_expense, insert_expense, delete_expense as remove_expense
 from datetime import datetime, timedelta
 
 app = Flask(__name__)
-app.secret_key = 'dev-secret-key-for-spendly'
+app.secret_key = os.environ.get('SPENDLY_SECRET_KEY', 'dev-secret-key-for-spendly')
 app.permanent_session_lifetime = timedelta(days=30)
 
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'user_id' not in session:
-            flash("Please log in to access this page.")
+            flash("Please log in to access this page.", "error")
             return redirect(url_for('login'))
         return f(*args, **kwargs)
     return decorated_function
@@ -44,26 +45,26 @@ def register():
 
         # 1. Check for empty fields
         if not all([name, email, password, confirm_password]):
-            flash("All fields are required.")
+            flash("All fields are required.", "error")
             return redirect(url_for('register'))
 
         # 2. Check password match
         if password != confirm_password:
-            flash("Passwords do not match.")
+            flash("Passwords do not match.", "error")
             return redirect(url_for('register'))
 
         # 3. Check email uniqueness
         if get_user_by_email(email):
-            flash("Email already registered.")
+            flash("Email already registered.", "error")
             return redirect(url_for('register'))
 
         try:
             hashed_password = generate_password_hash(password)
             create_user(name, email, hashed_password)
-            flash("Account created successfully! Please sign in.")
+            flash("Account created successfully! Please sign in.", "success")
             return redirect(url_for('login'))
         except Exception as e:
-            flash(f"An error occurred: {e}")
+            flash(f"An error occurred: {e}", "error")
             return redirect(url_for('register'))
 
     return render_template("register.html")
@@ -112,7 +113,7 @@ def privacy():
 @app.route("/logout")
 def logout():
     session.clear()
-    flash("You have been logged out.")
+    flash("You have been logged out.", "success")
     return redirect(url_for('landing'))
 
 
@@ -157,7 +158,7 @@ def profile():
 
     # Logic check: from must be <= to
     if valid_from and valid_to and valid_from > valid_to:
-        flash("Start date must be before end date.")
+        flash("Start date must be before end date.", "error")
         valid_from = valid_to = None
 
     # 2. Fetch Data using filtered bounds
@@ -193,30 +194,30 @@ def add_expense():
             if amount <= 0:
                 raise ValueError("Amount must be positive")
         except (TypeError, ValueError):
-            flash("Please enter a valid positive amount.")
+            flash("Please enter a valid positive amount.", "error")
             return render_template("add_expense.html", error="Invalid amount")
 
         # 2. Validate Category
         valid_categories = ["Food", "Transport", "Bills", "Health", "Entertainment", "Shopping", "Other"]
         if category not in valid_categories:
-            flash("Please select a valid category.")
+            flash("Please select a valid category.", "error")
             return render_template("add_expense.html", error="Invalid category")
 
         # 3. Validate Date
         try:
             datetime.strptime(date_str, "%Y-%m-%d")
         except (TypeError, ValueError):
-            flash("Please enter a valid date.")
+            flash("Please enter a valid date.", "error")
             return render_template("add_expense.html", error="Invalid date")
 
         # 4. Save Expense
         try:
             user_id = session.get('user_id')
             insert_expense(user_id, amount, category, date_str, description)
-            flash("Expense added successfully!")
+            flash("Expense added successfully!", "success")
             return redirect(url_for('profile'))
         except Exception as e:
-            flash(f"An error occurred while saving: {e}")
+            flash(f"An error occurred while saving: {e}", "error")
             return render_template("add_expense.html", error="Database error")
 
     # GET: render form with today's date as default
@@ -241,27 +242,27 @@ def edit_expense(id):
             if amount <= 0:
                 raise ValueError()
         except (TypeError, ValueError):
-            flash("Please enter a valid positive amount.")
+            flash("Please enter a valid positive amount.", "error")
             return render_template("edit_expense.html", expense={"id": id}, error="Invalid amount")
 
         valid_categories = ["Food", "Transport", "Bills", "Health", "Entertainment", "Shopping", "Other"]
         if category not in valid_categories:
-            flash("Please select a valid category.")
+            flash("Please select a valid category.", "error")
             return render_template("edit_expense.html", expense={"id": id}, error="Invalid category")
 
         try:
             datetime.strptime(date_str, "%Y-%m-%d")
         except (TypeError, ValueError):
-            flash("Please enter a valid date.")
+            flash("Please enter a valid date.", "error")
             return render_template("edit_expense.html", expense={"id": id}, error="Invalid date")
 
         # Update in DB
         try:
             update_expense(id, user_id, amount, category, date_str, description)
-            flash("Expense updated successfully!")
+            flash("Expense updated successfully!", "success")
             return redirect(url_for('profile'))
         except Exception as e:
-            flash(f"An error occurred: {e}")
+            flash(f"An error occurred: {e}", "error")
             return render_template("edit_expense.html", expense={"id": id}, error="Database error")
 
     # GET: Load existing expense
@@ -272,9 +273,15 @@ def edit_expense(id):
     return render_template("edit_expense.html", expense=expense)
 
 
-@app.route("/expenses/<int:id>/delete")
+@app.route("/expenses/<int:id>/delete", methods=["POST"])
+@login_required
 def delete_expense(id):
-    return "Delete expense — coming in Step 9"
+    user_id = session.get('user_id')
+    deleted = remove_expense(id, user_id)
+    if not deleted:
+        abort(404)
+    flash("Expense deleted successfully!", "success")
+    return redirect(url_for('profile'))
 
 
 if __name__ == "__main__":

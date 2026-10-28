@@ -124,6 +124,16 @@ def get_category_breakdown(user_id, date_from=None, date_to=None):
 
         return breakdown
 
+def insert_expense(user_id, amount, category, date, description):
+    """Inserts a new expense for the given user and returns its ID."""
+    with get_db() as conn:
+        cursor = conn.execute(
+            "INSERT INTO expenses (user_id, amount, category, date, description) VALUES (?, ?, ?, ?, ?)",
+            (user_id, amount, category, date, description)
+        )
+        conn.commit()
+        return cursor.lastrowid
+
 def get_expense_by_id(expense_id, user_id):
     """Fetches a single expense row only if it belongs to the given user."""
     with get_db() as conn:
@@ -138,6 +148,16 @@ def update_expense(expense_id, user_id, amount, category, date, description):
         cursor = conn.execute(
             "UPDATE expenses SET amount = ?, category = ?, date = ?, description = ? WHERE id = ? AND user_id = ?",
             (amount, category, date, description, expense_id, user_id)
+        )
+        conn.commit()
+        return cursor.rowcount
+
+def delete_expense(expense_id, user_id):
+    """Deletes an expense, scoped to the user for ownership safety."""
+    with get_db() as conn:
+        cursor = conn.execute(
+            "DELETE FROM expenses WHERE id = ? AND user_id = ?",
+            (expense_id, user_id)
         )
         conn.commit()
         return cursor.rowcount
