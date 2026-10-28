@@ -1,7 +1,9 @@
 import sqlite3
+from pathlib import Path
 from werkzeug.security import generate_password_hash
 
-DATABASE = 'spendly.db'
+# Keep the database tied to this project instead of the process working directory.
+DATABASE = Path(__file__).resolve().parent.parent / 'spendly.db'
 
 def get_db():
     """Returns a SQLite connection with row_factory and foreign keys enabled."""
