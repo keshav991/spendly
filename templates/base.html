@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     {% block head %}{% endblock %}
 </head>
-<body>
+<body class="app-body">
 
     <nav class="navbar">
         <div class="nav-inner">
@@ -47,7 +47,11 @@
         </div>
     </footer>
 
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+      lucide.createIcons();
+    </script>
     {% block scripts %}{% endblock %}
 </body>
 </html>

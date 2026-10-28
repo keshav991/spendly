@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
+
 {% block title %}My Profile — Spendly{% endblock %}
 
 {% block content %}
@@ -7,68 +11,66 @@
     <div class="profile-container">
 
         <!-- 1. User Info Card -->
-        <div class="profile-card">
-            <div class="user-avatar">
+        <div class="profile-header">
+            <div class="profile-avatar">
                 {{ user.name[0] | upper }}
             </div>
-            <div class="user-details">
-                <h1 class="user-name">{{ user.name }}</h1>
-                <p class="user-email">{{ user.email }}</p>
-                <span class="user-badge">Member since {{ user.member_since }}</span>
+            <div class="profile-info">
+                <h1 class="profile-name">{{ user.name }}</h1>
+                <p class="profile-email">{{ user.email }}</p>
+                <span class="profile-badge">
+                    <i data-lucide="calendar" class="stat-icon"></i>
+                    Member since {{ user.member_since }}
+                </span>
             </div>
-        </div>
-
-        <!-- Date Filter Bar -->
-        <div class="filter-bar">
-            <div class="presets">
-                <a href="{{ url_for('profile', preset='this_month') }}"
-                   class="preset-btn {{ 'active' if active_preset == 'this_month' }}">This Month</a>
-                <a href="{{ url_for('profile', preset='last_3') }}"
-                   class="preset-btn {{ 'active' if active_preset == 'last_3' }}">Last 3 Months</a>
-                <a href="{{ url_for('profile', preset='last_6') }}"
-                   class="preset-btn {{ 'active' if active_preset == 'last_6' }}">Last 6 Months</a>
-                <a href="{{ url_for('profile', preset='all') }}"
-                   class="preset-btn {{ 'active' if not active_preset or active_preset == 'all' }}">All Time</a>
-            </div>
-            <form method="GET" action="{{ url_for('profile') }}" class="custom-range">
-                <input type="date" name="date_from" value="{{ date_from or '' }}" class="date-input">
-                <span class="range-sep">to</span>
-                <input type="date" name="date_to" value="{{ date_to or '' }}" class="date-input">
-                <button type="submit" class="btn-apply">Apply</button>
-            </form>
         </div>
 
         <!-- 2. Summary Stats Row -->
         <div class="stats-grid">
-            <div class="stat-item">
-                <span class="stat-label">Total Spent</span>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <i data-lucide="wallet" class="stat-icon"></i>
+                    Total Spent
+                </div>
                 <span class="stat-value">₹{{ stats.total_spent }}</span>
             </div>
-            <div class="stat-item">
-                <span class="stat-label">Transactions</span>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <i data-lucide="list" class="stat-icon"></i>
+                    Transactions
+                </div>
                 <span class="stat-value">{{ stats.transaction_count }}</span>
             </div>
-            <div class="stat-item">
-                <span class="stat-label">Top Category</span>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <i data-lucide, "tag" class="stat-icon"></i>
+                    Top Category
+                </div>
                 <span class="stat-value">{{ stats.top_category }}</span>
             </div>
         </div>
 
         <!-- 3. Transaction History Table -->
-        <div class="history-section">
+        <div class="data-section">
             <div class="section-header">
-                <h2 class="section-title">Recent Transactions</h2>
-                <a href="{{ url_for('add_expense') }}" class="btn-add-expense">+ Add Expense</a>
+                <h2 class="section-title">
+                    <i data-lucide="history" class="section-icon"></i>
+                    Recent Transactions
+                </h2>
+                <a href="{{ url_for('add_expense') }}" class="btn-add">
+                    <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+                    Add Expense
+                </a>
             </div>
-            <div class="table-wrapper">
-                <table class="transactions-table">
+            <div class="tx-table-container">
+                <table class="tx-table">
                     <thead>
                         <tr>
                             <th>Date</th>
                             <th>Description</th>
                             <th>Category</th>
-                            <th>Amount</th>
-                            <th>Actions</th>
+                            <th style="text-align: right;">Amount</th>
+                            <th style="text-align: right;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -76,15 +78,15 @@
                         <tr>
                             <td>{{ tx.date }}</td>
                             <td>{{ tx.description }}</td>
-                            <td><span class="category-badge badge-{{ tx.category | lower }}">{{ tx.category }}</span></td>
-                            <td class="amount">₹{{ tx.amount }}</td>
-                            <td><div class="action-links">
-                                <a href="{{ url_for('edit_expense', id=tx.id) }}" class="edit-link">Edit</a>
+                            <td><span class="tx-cat-badge">{{ tx.category }}</span></td>
+                            <td class="tx-amount">₹{{ tx.amount }}</td>
+                            <td class="action-cell">
+                                <a href="{{ url_for('edit_expense', id=tx.id) }}" class="btn-action btn-action-edit">Edit</a>
                                 <form method="POST" action="{{ url_for('delete_expense', id=tx.id) }}"
                                       style="display:inline" onsubmit="return confirm('Delete this expense?')">
-                                    <button type="submit" class="btn-delete">Delete</button>
+                                    <button type="submit" class="btn-action btn-action-delete">Delete</button>
                                 </form>
-                            </div></td>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -93,17 +95,24 @@
         </div>
 
         <!-- 4. Category Breakdown -->
-        <div class="breakdown-section">
-            <h2 class="section-title">Spending Breakdown</h2>
-            <div class="breakdown-list">
+        <div class="data-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i data-lucide="pie-chart" class="section-icon"></i>
+                    Spending Breakdown
+                </h2>
+            </div>
+            <div class="breakdown-grid">
                 {% for cat in categories %}
-                <div class="breakdown-item">
-                    <div class="breakdown-info">
-                        <span class="cat-name">{{ cat.name }}</span>
-                        <span class="cat-amount">₹{{ cat.amount }}</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: {{ cat.percentage }}%;"></div>
+                <div class="breakdown-card">
+                    <div class="breakdown-row">
+                        <div class="breakdown-info">
+                            <span class="breakdown-label">{{ cat.name }}</span>
+                            <span class="breakdown-value">₹{{ cat.amount }}</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: {{ cat.percentage }}%;"></div>
+                        </div>
                     </div>
                 </div>
                 {% endfor %}
